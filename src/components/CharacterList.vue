@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div>
-      <input v-model="name" placeholder="Name">
-      <select v-model="status">
+    <div class="filters">
+      <input v-model="name" placeholder="Name" class="filter-input">
+      <select v-model="status" class="filter-select">
         <option value="">Any Status</option>
         <option value="alive">Alive</option>
         <option value="dead">Dead</option>
@@ -12,10 +12,10 @@
     <div class="character-list">
       <CharacterCard v-for="character in characters" :key="character.id" :character="character" />
     </div>
-    <div>
-      <button @click="prevPage" :disabled="page === 1">Previous</button>
-      <span>Page {{ page }}</span>
-      <button @click="nextPage">Next</button>
+    <div class="pagination">
+      <button @click="prevPage" :disabled="page === 1" class="pagination-button">Previous</button>
+      <span class="page-number">Page {{ page }}</span>
+      <button @click="nextPage" class="pagination-button">Next</button>
     </div>
   </div>
 </template>
@@ -64,10 +64,49 @@ onMounted(fetchCharacters);
 watch([page, name, status], fetchCharacters);
 </script>
 
-<style>
+<style scoped>
+.filters {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.filter-input,
+.filter-select {
+  padding: 10px;
+  margin: 0 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
 .character-list {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+.pagination-button {
+  padding: 10px 20px;
+  margin: 0 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.pagination-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+.pagination-button:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+.page-number {
+  font-size: 1.2em;
+  margin: 0 10px;
 }
 </style>
