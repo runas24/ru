@@ -7,15 +7,15 @@
     </div>
   </template>
   
-  <script>
-  export default {
-    props: {
-      character: {
-        type: Object,
-        required: true
-      }
+  <script setup>
+  import { defineProps } from 'vue';
+  
+  const props = defineProps({
+    character: {
+      type: Object,
+      required: true
     }
-  };
+  });
   </script>
   
   <style scoped>

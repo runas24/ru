@@ -11,21 +11,16 @@
     </div>
   </template>
   
-  <script>
-  export default {
-    data() {
-      return {
-        filters: {
-          name: '',
-          status: ''
-        }
-      };
-    },
-    methods: {
-      applyFilters() {
-        this.$emit('applyFilters', { ...this.filters });
-      }
-    }
+  <script setup>
+  import { ref } from 'vue';
+  
+  const filters = ref({
+    name: '',
+    status: ''
+  });
+  
+  const applyFilters = () => {
+    emit('applyFilters', { ...filters.value });
   };
   </script>
   

@@ -6,25 +6,23 @@
     </div>
   </template>
   
-  <script>
-  export default {
-    props: {
-      info: {
-        type: Object,
-        required: true
-      }
-    },
-    computed: {
-      currentPage() {
-        return this.info.prev ? this.info.prev + 1 : 1;
-      }
-    },
-    methods: {
-      changePage(page) {
-        if (page) {
-          this.$emit('changePage', page);
-        }
-      }
+  <script setup>
+  import { defineProps, computed } from 'vue';
+  
+  const props = defineProps({
+    info: {
+      type: Object,
+      required: true
+    }
+  });
+  
+  const currentPage = computed(() => {
+    return props.info.prev ? props.info.prev + 1 : 1;
+  });
+  
+  const changePage = (page) => {
+    if (page) {
+      emit('changePage', page);
     }
   };
   </script>

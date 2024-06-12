@@ -8,52 +8,43 @@
     </div>
   </template>
   
-  <script>
+  <script setup>
+  import { ref, onMounted } from 'vue';
   import axios from 'axios';
   import CharacterCard from './CharacterCard.vue';
   import Pagination from './Pagination.vue';
   import Filters from './Filters.vue';
   
-  export default {
-    components: { CharacterCard, Pagination, Filters },
-    data() {
-      return {
-        characters: [],
-        info: {},
-        filters: {
-          name: '',
-          status: ''
-        },
-        page: 1
-      };
-    },
-    methods: {
-      async fetchCharacters() {
-        const { name, status } = this.filters;
-        const response = await axios.get(`https://rickandmortyapi.com/api/character`, {
-          params: {
-            page: this.page,
-            name,
-            status
-          }
-        });
-        this.characters = response.data.results;
-        this.info = response.data.info;
-      },
-      changePage(page) {
-        this.page = page;
-        this.fetchCharacters();
-      },
-      applyFilters(filters) {
-        this.filters = filters;
-        this.page = 1;
-        this.fetchCharacters();
+  const characters = ref([]);
+  const info = ref({});
+  const filters = ref({ name: '', status: '' });
+  const page = ref(1);
+  
+  const fetchCharacters = async () => {
+    const { name, status } = filters.value;
+    const response = await axios.get(`https://rickandmortyapi.com/api/character`, {
+      params: {
+        page: page.value,
+        name,
+        status
       }
-    },
-    created() {
-      this.fetchCharacters();
-    }
+    });
+    characters.value = response.data.results;
+    info.value = response.data.info;
   };
+  
+  const changePage = (newPage) => {
+    page.value = newPage;
+    fetchCharacters();
+  };
+  
+  const applyFilters = (newFilters) => {
+    filters.value = newFilters;
+    page.value = 1;
+    fetchCharacters();
+  };
+  
+  onMounted(fetchCharacters);
   </script>
   
   <style scoped>
