@@ -8,7 +8,6 @@
         <option value="dead">Dead</option>
         <option value="unknown">Unknown</option>
       </select>
-      <button @click="applyFilters">Apply</button>
     </div>
     <div class="character-list">
       <CharacterCard v-for="character in characters" :key="character.id" :character="character" />
@@ -42,11 +41,6 @@ const fetchCharacters = async () => {
   characters.value = response.data.results;
 };
 
-const applyFilters = () => {
-  page.value = 1;
-  fetchCharacters();
-};
-
 const nextPage = () => {
   page.value++;
   fetchCharacters();
@@ -58,7 +52,7 @@ const prevPage = () => {
 };
 
 onMounted(fetchCharacters);
-watch([page], fetchCharacters);
+watch([page, name, status], fetchCharacters);
 </script>
 
 <style>
