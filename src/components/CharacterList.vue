@@ -41,14 +41,23 @@ const fetchCharacters = async () => {
   characters.value = response.data.results;
 };
 
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+};
+
 const nextPage = () => {
   page.value++;
   fetchCharacters();
+  scrollToTop();
 };
 
 const prevPage = () => {
   page.value--;
   fetchCharacters();
+  scrollToTop();
 };
 
 onMounted(fetchCharacters);
