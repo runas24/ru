@@ -1,70 +1,98 @@
 <template>
   <div>
-    <input v-model="nameFilter" placeholder="Фильтр по имени">
-    <select v-model="statusFilter">
-      <option value="">Все статусы</option>
-      <option v-for="status in statuses" :value="status">{{ status }}</option>
+    <input v-model="searchName" placeholder="Search by name" />
+    <select v-model="searchStatus">
+      <option value="">All</option>
+      <option value="alive">Alive</option>
+      <option value="dead">Dead</option>
+      <option value="unknown">Unknown</option>
     </select>
-    <button @click="applyFilters">Применить</button>
+    <button @click="applyFilters">Apply</button>
 
-    <div v-if="loading">Загрузка...</div>
+    <div v-if="loading">Loading...</div>
 
-    <div v-else>
-      <div v-for="character in filteredCharacters" :key="character.id">
+    <div v-if="error">{{ error }}</div>
+
+    <div v-if="characters">
+      <div v-for="character in characters" :key="character.id">
         <div>{{ character.name }}</div>
         <div>{{ character.status }}</div>
-        <!-- Добавьте другие поля персонажа -->
+        <div>{{ character.species }}</div>
+        <div>{{ character.type }}</div>
+        <div>{{ character.gender }}</div>
+        <div>{{ character.origin.name }}</div>
+        <div>{{ character.location.name }}</div>
+        <!-- Add more character details as needed -->
       </div>
-
-      <button @click="previousPage" :disabled="currentPage === 1">Предыдущая</button>
-      <button @click="nextPage" :disabled="currentPage === totalPages">Следующая</button>
     </div>
+
+    <button @click="prevPage" :disabled="page === 1">Previous</button>
+    <span>{{ page }}</span>
+    <button @click="nextPage" :disabled="page === totalPages">Next</button>
   </div>
 </template>
 
 <script>
+import { ref } from 'vue';
+
 export default {
-  data() {
-    return {
-      characters: [],
-      filteredCharacters: [],
-      nameFilter: '',
-      statusFilter: '',
-      currentPage: 1,
-      totalPages: 0,
-      loading: true,
-      statuses: ['Живой', 'Мёртвый', 'Неизвестно'] // Добавьте другие статусы при необходимости
+  name: 'RickAndMortyCharacters',
+  setup() {
+    const characters = ref([]);
+    const loading = ref(false);
+    const error = ref('');
+    const page = ref(1);
+    const totalPages = ref(1);
+    const searchName = ref('');
+    const searchStatus = ref('');
+
+    const fetchCharacters = async () => {
+      loading.value = true;
+      try {
+        const response = await fetch(`https://rickandmortyapi.com/api/character/?page=${page.value}&name=${searchName.value}&status=${searchStatus.value}`);
+        const data = await response.json();
+        characters.value = data.results;
+        totalPages.value = data.info.pages;
+      } catch (err) {
+        error.value = 'Error fetching data';
+      } finally {
+        loading.value = false;
+      }
     };
-  },
-  mounted() {
-    this.fetchCharacters();
-  },
-  methods: {
-    fetchCharacters() {
-      // Здесь используйте axios или fetch для получения данных из API
-      // После получения данных, сохраните их в this.characters и обновите this.filteredCharacters
-    },
-    applyFilters() {
-      // Примените фильтры по имени и статусу
-      this.filteredCharacters = this.characters.filter(character =>
-        character.name.toLowerCase().includes(this.nameFilter.toLowerCase()) &&
-        (this.statusFilter === '' || character.status === this.statusFilter)
-      );
-    },
-    previousPage() {
-      // Переход на предыдущую страницу пагинации
-      if (this.currentPage > 1) {
-        this.currentPage--;
-        // Обновите this.filteredCharacters с учетом текущей страницы
+
+    const nextPage = () => {
+      if (page.value < totalPages.value) {
+        page.value++;
+        fetchCharacters();
       }
-    },
-    nextPage() {
-      // Переход на следующую страницу пагинации
-      if (this.currentPage < this.totalPages) {
-        this.currentPage++;
-        // Обновите this.filteredCharacters с учетом текущей страницы
+    };
+
+    const prevPage = () => {
+      if (page.value > 1) {
+        page.value--;
+        fetchCharacters();
       }
-    }
+    };
+
+    const applyFilters = () => {
+      page.value = 1;
+      fetchCharacters();
+    };
+
+    fetchCharacters();
+
+    return {
+      characters,
+      loading,
+      error,
+      page,
+      totalPages,
+      searchName,
+      searchStatus,
+      nextPage,
+      prevPage,
+      applyFilters
+    };
   }
 };
 </script>
