@@ -2,7 +2,7 @@
 <template>
   <div class="pagination">
     <button @click="prevPage" :disabled="page === 1">Previous</button>
-    <span>{{ page }}</span>
+    <span>{{ page }} / {{ totalPages }}</span>
     <button @click="nextPage" :disabled="page === totalPages">Next</button>
   </div>
 </template>
@@ -17,18 +17,14 @@ export default {
     totalPages: {
       type: Number,
       required: true
-    },
-    onPageChange: {
-      type: Function,
-      required: true
     }
   },
   methods: {
     prevPage() {
-      this.onPageChange(this.page - 1);
+      this.$emit('pageChange', this.page - 1);
     },
     nextPage() {
-      this.onPageChange(this.page + 1);
+      this.$emit('pageChange', this.page + 1);
     }
   }
 };

@@ -2,7 +2,9 @@
 <template>
   <div id="app">
     <Filter @filter="applyFilters" />
-    <CharacterCard v-for="character in filteredCharacters" :key="character.id" :character="character" />
+    <div class="character-grid">
+      <CharacterCard v-for="character in filteredCharacters" :key="character.id" :character="character" />
+    </div>
     <Pagination :page="page" :totalPages="totalPages" @pageChange="loadCharacters" />
   </div>
 </template>
@@ -63,5 +65,11 @@ export default {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
+}
+
+.character-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
 }
 </style>

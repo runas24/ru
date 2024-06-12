@@ -1,26 +1,31 @@
+<!-- src/components/CharacterCard.vue -->
 <template>
   <div class="character-card">
-    <img :src="character.image" :alt="character.name">
     <h2>{{ character.name }}</h2>
     <p>Status: {{ character.status }}</p>
     <p>Species: {{ character.species }}</p>
+    <p>Gender: {{ character.gender }}</p>
   </div>
 </template>
 
-<script setup>
-defineProps(['character']);
+<script>
+export default {
+  props: {
+    character: {
+      type: Object,
+      required: true
+    }
+  }
+};
 </script>
 
-<style>
+<style scoped>
 .character-card {
+  display: inline-block;
+  width: 200px;
   border: 1px solid #ccc;
-  padding: 10px;
-  margin: 10px;
-  text-align: center;
-  border-radius: 5px;
-}
-.character-card img {
-  max-width: 100%;
-  border-radius: 5px;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 8px;
 }
 </style>
