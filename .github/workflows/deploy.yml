@@ -1,28 +1,22 @@
-name: Deploy
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches:
-      - main
+      - main # Вам может потребоваться изменить ветку, если у вас используется другая основная ветка
 
 jobs:
-  build:
-    name: Build
+  deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v2
 
       - name: Install dependencies
         run: npm install
 
-      - name: Build project
-        run: npm run build
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: dist
-          publish_branch: gh-pages
+      - name: Build and deploy
+        run: npm run deploy
+        env:
+          NODE_ENV: production
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Это токен вашего GitHub, необходим для доступа к репозиторию. Создайте его в настройках своего профиля на GitHub
