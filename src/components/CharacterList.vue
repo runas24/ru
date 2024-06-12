@@ -15,7 +15,7 @@
     <div class="pagination">
       <button @click="prevPage" :disabled="page === 1" class="pagination-button">Previous</button>
       <span class="page-number">Page {{ page }}</span>
-      <button @click="nextPage" class="pagination-button">Next</button>
+      <button @click="nextPage" :disabled="page === totalPages" class="pagination-button">Next</button>
     </div>
   </div>
 </template>
@@ -27,6 +27,7 @@ import CharacterCard from './CharacterCard.vue';
 
 const characters = ref([]);
 const page = ref(1);
+const totalPages = ref(1);
 const name = ref('');
 const status = ref('');
 
@@ -39,6 +40,7 @@ const fetchCharacters = async () => {
     }
   });
   characters.value = response.data.results;
+  totalPages.value = response.data.info.pages;
 };
 
 const scrollToTop = () => {
@@ -49,15 +51,19 @@ const scrollToTop = () => {
 };
 
 const nextPage = () => {
-  page.value++;
-  fetchCharacters();
-  scrollToTop();
+  if (page.value < totalPages.value) {
+    page.value++;
+    fetchCharacters();
+    scrollToTop();
+  }
 };
 
 const prevPage = () => {
-  page.value--;
-  fetchCharacters();
-  scrollToTop();
+  if (page.value > 1) {
+    page.value--;
+    fetchCharacters();
+    scrollToTop();
+  }
 };
 
 onMounted(fetchCharacters);
