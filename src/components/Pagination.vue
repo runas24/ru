@@ -1,51 +1,35 @@
-<!-- Pagination.vue -->
 <template>
   <div class="pagination">
-    <button @click="previousPage">Previous</button>
+    <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
     <span>{{ currentPage }}</span>
-    <button @click="nextPage">Next</button>
+    <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    currentPage: {
-      type: Number,
-      required: true
-    },
-    totalPages: {
-      type: Number,
-      required: true
-    },
-    onPageChange: {
-      type: Function,
-      required: true
-    }
+    currentPage: Number,
+    totalPages: Number,
   },
   methods: {
-    previousPage() {
-      if (this.currentPage > 1) {
-        this.onPageChange(this.currentPage - 1);
-      }
+    prevPage() {
+      this.$emit('prev');
     },
     nextPage() {
-      if (this.currentPage < this.totalPages) {
-        this.onPageChange(this.currentPage + 1);
-      }
-    }
-  }
+      this.$emit('next');
+    },
+  },
 };
 </script>
 
 <style scoped>
 .pagination {
-  margin-top: 20px;
+  margin-top: 16px;
+  text-align: center;
 }
 
 button {
-  cursor: pointer;
-  padding: 5px 10px;
-  margin: 0 5px;
+  margin: 0 8px;
 }
 </style>
