@@ -9,7 +9,7 @@
   </template>
   
   <script setup>
-  import { ref, onMounted } from 'vue';
+  import { ref } from 'vue';
   import axios from 'axios';
   import CharacterCard from './CharacterCard.vue';
   import Pagination from './Pagination.vue';
@@ -43,8 +43,6 @@
     page.value = 1;
     fetchCharacters();
   };
-  
-  onMounted(fetchCharacters);
   </script>
   
   <style scoped>

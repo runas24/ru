@@ -12,12 +12,14 @@
   </template>
   
   <script setup>
-  import { ref } from 'vue';
+  import { ref, defineProps, defineEmits } from 'vue';
   
   const filters = ref({
     name: '',
     status: ''
   });
+  
+  const { emit } = defineEmits(['applyFilters']);
   
   const applyFilters = () => {
     emit('applyFilters', { ...filters.value });

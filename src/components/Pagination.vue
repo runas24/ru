@@ -7,7 +7,7 @@
   </template>
   
   <script setup>
-  import { defineProps, computed } from 'vue';
+  import { defineProps, defineEmits, computed } from 'vue';
   
   const props = defineProps({
     info: {
@@ -15,6 +15,8 @@
       required: true
     }
   });
+  
+  const { emit } = defineEmits(['changePage']);
   
   const currentPage = computed(() => {
     return props.info.prev ? props.info.prev + 1 : 1;
