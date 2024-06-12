@@ -1,38 +1,29 @@
+<!-- src/components/CharacterCard.vue -->
 <template>
   <div class="character-card">
-    <img :src="character.image" :alt="character.name" class="character-image" />
-    <div class="character-info">
-      <h2>{{ character.name }}</h2>
-      <p>Status: {{ character.status }}</p>
-      <p>Species: {{ character.species }}</p>
-      <!-- Добавьте другие поля, если необходимо -->
-    </div>
+    <h2>{{ character.name }}</h2>
+    <p>Status: {{ character.status }}</p>
+    <p>Species: {{ character.species }}</p>
+    <p>Gender: {{ character.gender }}</p>
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    character: Object,
-  },
+    character: {
+      type: Object,
+      required: true
+    }
+  }
 };
 </script>
 
 <style scoped>
 .character-card {
   border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 15px;
-  margin: 10px;
-  width: 200px;
-}
-
-.character-image {
-  width: 100%;
-  border-radius: 5px;
-}
-
-.character-info {
-  margin-top: 10px;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
 }
 </style>

@@ -1,63 +1,67 @@
+<!-- src/App.vue -->
 <template>
-  <div>
-    <Filter @apply-filters="applyFilters" />
-    <div class="characters">
-      <CharacterCard v-for="character in filteredCharacters" :key="character.id" :character="character" />
-    </div>
-    <Pagination :page="page" :totalPages="totalPages" @update-page="updatePage" />
+  <div id="app">
+    <Filter @filter="applyFilters" />
+    <CharacterCard v-for="character in filteredCharacters" :key="character.id" :character="character" />
+    <Pagination :page="page" :totalPages="totalPages" @pageChange="loadCharacters" />
   </div>
 </template>
 
 <script>
+import axios from 'axios';
 import CharacterCard from './components/CharacterCard.vue';
 import Pagination from './components/Pagination.vue';
 import Filter from './components/Filter.vue';
-import { reactive, watch } from 'vue';
-import { getCharacters } from './api';
 
 export default {
   components: {
     CharacterCard,
     Pagination,
-    Filter,
+    Filter
   },
-  setup() {
-    const state = reactive({
+  data() {
+    return {
       characters: [],
       filteredCharacters: [],
       page: 1,
       totalPages: 1,
       nameFilter: '',
-      statusFilter: '',
-    });
-
-    const fetchCharacters = async () => {
-      const response = await getCharacters(state.page, state.nameFilter, state.statusFilter);
-      state.characters = response.results;
-      state.totalPages = response.info.pages;
+      statusFilter: ''
     };
-
-    const applyFilters = ({ name, status }) => {
-      state.nameFilter = name;
-      state.statusFilter = status;
-      state.page = 1; // Reset page when applying filters
-    };
-
-    const updatePage = (newPage) => {
-      state.page = newPage;
-    };
-
-    watch(() => [state.page, state.nameFilter, state.statusFilter], fetchCharacters, { immediate: true });
-
-    return { state, applyFilters, updatePage };
   },
+  mounted() {
+    this.loadCharacters();
+  },
+  methods: {
+    async loadCharacters(page = 1) {
+      try {
+        const response = await axios.get(`https://rickandmortyapi.com/api/character?page=${page}`);
+        this.characters = response.data.results;
+        this.totalPages = response.data.info.pages;
+        this.filterCharacters();
+      } catch (error) {
+        console.error('Error loading characters:', error);
+      }
+    },
+    applyFilters(filters) {
+      this.nameFilter = filters.name;
+      this.statusFilter = filters.status;
+      this.filterCharacters();
+    },
+    filterCharacters() {
+      this.filteredCharacters = this.characters.filter(character =>
+        character.name.toLowerCase().includes(this.nameFilter.toLowerCase()) &&
+        (this.statusFilter ? character.status.toLowerCase() === this.statusFilter.toLowerCase() : true)
+      );
+    }
+  }
 };
 </script>
 
 <style>
-.characters {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
+#app {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
 }
 </style>
