@@ -1,54 +1,70 @@
 <template>
+  <div>
     <div>
-      <Filters @applyFilters="applyFilters" />
-      <div class="character-list">
-        <CharacterCard v-for="character in characters" :key="character.id" :character="character" />
-      </div>
-      <Pagination :info="info" @changePage="changePage" />
+      <input v-model="name" placeholder="Name">
+      <select v-model="status">
+        <option value="">Any Status</option>
+        <option value="alive">Alive</option>
+        <option value="dead">Dead</option>
+        <option value="unknown">Unknown</option>
+      </select>
+      <button @click="applyFilters">Apply</button>
     </div>
-  </template>
-  
-  <script setup>
-  import { ref } from 'vue';
-  import axios from 'axios';
-  import CharacterCard from './CharacterCard.vue';
-  import Pagination from './Pagination.vue';
-  import Filters from './Filters.vue';
-  
-  const characters = ref([]);
-  const info = ref({});
-  const filters = ref({ name: '', status: '' });
-  const page = ref(1);
-  
-  const fetchCharacters = async () => {
-    const { name, status } = filters.value;
-    const response = await axios.get(`https://rickandmortyapi.com/api/character`, {
-      params: {
-        page: page.value,
-        name,
-        status
-      }
-    });
-    characters.value = response.data.results;
-    info.value = response.data.info;
-  };
-  
-  const changePage = (newPage) => {
-    page.value = newPage;
-    fetchCharacters();
-  };
-  
-  const applyFilters = (newFilters) => {
-    filters.value = newFilters;
-    page.value = 1;
-    fetchCharacters();
-  };
-  </script>
-  
-  <style scoped>
-  .character-list {
-    display: flex;
-    flex-wrap: wrap;
-  }
-  </style>
-  
+    <div class="character-list">
+      <CharacterCard v-for="character in characters" :key="character.id" :character="character" />
+    </div>
+    <div>
+      <button @click="prevPage" :disabled="page === 1">Previous</button>
+      <span>Page {{ page }}</span>
+      <button @click="nextPage">Next</button>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted, watch } from 'vue';
+import axios from 'axios';
+import CharacterCard from './CharacterCard.vue';
+
+const characters = ref([]);
+const page = ref(1);
+const name = ref('');
+const status = ref('');
+
+const fetchCharacters = async () => {
+  const response = await axios.get(`https://rickandmortyapi.com/api/character`, {
+    params: {
+      page: page.value,
+      name: name.value,
+      status: status.value,
+    }
+  });
+  characters.value = response.data.results;
+};
+
+const applyFilters = () => {
+  page.value = 1;
+  fetchCharacters();
+};
+
+const nextPage = () => {
+  page.value++;
+  fetchCharacters();
+};
+
+const prevPage = () => {
+  page.value--;
+  fetchCharacters();
+};
+
+onMounted(fetchCharacters);
+watch([page], fetchCharacters);
+</script>
+
+<style>
+.character-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+</style>
