@@ -1,42 +1,51 @@
+<!-- Pagination.vue -->
 <template>
-    <div class="pagination">
-      <button @click="changePage(info.prev)" :disabled="!info.prev">Previous</button>
-      <span>Page {{ currentPage }} of {{ info.pages }}</span>
-      <button @click="changePage(info.next)" :disabled="!info.next">Next</button>
-    </div>
-  </template>
-  
-  <script setup>
-  import { defineProps, defineEmits, computed } from 'vue';
-  
-  const props = defineProps({
-    info: {
-      type: Object,
+  <div class="pagination">
+    <button @click="previousPage">Previous</button>
+    <span>{{ currentPage }}</span>
+    <button @click="nextPage">Next</button>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    currentPage: {
+      type: Number,
+      required: true
+    },
+    totalPages: {
+      type: Number,
+      required: true
+    },
+    onPageChange: {
+      type: Function,
       required: true
     }
-  });
-  
-  const { emit } = defineEmits(['changePage']);
-  
-  const currentPage = computed(() => {
-    return props.info.prev ? props.info.prev + 1 : 1;
-  });
-  
-  const changePage = (page) => {
-    if (page) {
-      emit('changePage', page);
+  },
+  methods: {
+    previousPage() {
+      if (this.currentPage > 1) {
+        this.onPageChange(this.currentPage - 1);
+      }
+    },
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.onPageChange(this.currentPage + 1);
+      }
     }
-  };
-  </script>
-  
-  <style scoped>
-  .pagination {
-    display: flex;
-    justify-content: center;
-    margin: 1rem 0;
   }
-  button {
-    margin: 0 0.5rem;
-  }
-  </style>
-  
+};
+</script>
+
+<style scoped>
+.pagination {
+  margin-top: 20px;
+}
+
+button {
+  cursor: pointer;
+  padding: 5px 10px;
+  margin: 0 5px;
+}
+</style>
