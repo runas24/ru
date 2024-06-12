@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import CharactersPage from './views/CharactersPage.vue';
+import CharactersPage from './CharactersPage.vue';
 
 export default {
   components: {
