@@ -1,23 +1,23 @@
 <template>
   <div class="pagination">
-    <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
-    <span>{{ currentPage }}</span>
-    <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
+    <button @click="prevPage" :disabled="page === 1">Prev</button>
+    <span>{{ page }}</span>
+    <button @click="nextPage" :disabled="page === totalPages">Next</button>
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    currentPage: Number,
+    page: Number,
     totalPages: Number,
   },
   methods: {
-    prevPage() {
-      this.$emit('prev');
-    },
     nextPage() {
-      this.$emit('next');
+      this.$emit('update-page', this.page + 1);
+    },
+    prevPage() {
+      this.$emit('update-page', this.page - 1);
     },
   },
 };
@@ -25,11 +25,10 @@ export default {
 
 <style scoped>
 .pagination {
-  margin-top: 16px;
-  text-align: center;
+  margin-top: 20px;
 }
 
-button {
-  margin: 0 8px;
+.pagination button {
+  margin: 0 5px;
 }
 </style>
